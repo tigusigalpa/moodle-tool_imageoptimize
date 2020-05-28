@@ -42,6 +42,7 @@ class Notification extends \admin_setting
      * @var string
      */
     protected $type = 'info';
+
     /**
      * not a setting, just text
      *

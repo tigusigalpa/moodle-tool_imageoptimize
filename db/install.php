@@ -24,10 +24,6 @@
 
 function xmldb_tool_imageoptimize_install()
 {
-    global $CFG;
-    $dir = $CFG->tempdir . '/tool_imageoptimize';
-    if (!file_exists($dir) || !is_dir($dir)) {
-        @mkdir($dir, 0755);
-    }
+    make_temp_directory('tool_imageoptimize');
     return true;
 }

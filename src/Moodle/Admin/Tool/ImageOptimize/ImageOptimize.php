@@ -152,9 +152,9 @@ class ImageOptimize
         global $CFG, $DB;
         $this->cfg = $CFG;
         $this->db = $DB;
-        $this->tempDir = $this->cfg->tempdir . '/' . self::COMPONENT;
+        $this->tempDir = $this->cfg->tempdir . '/tool_imageoptimize';
         if (!file_exists($this->tempDir) || !is_dir($this->tempDir)) {
-            @mkdir($this->tempDir, 0755);
+            make_temp_directory('tool_imageoptimize');
         }
         if ($fileRecord) {
             $this->fileRecord = $fileRecord;

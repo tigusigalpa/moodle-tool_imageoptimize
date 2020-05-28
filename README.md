@@ -16,7 +16,7 @@ UNIX backed OS (_not Windows or MacOS for the moment_): **Ubuntu/Debian, CentOS,
 
 ### PHP
 
-PHP version **7.0.0+**
+PHP version **7.2.0+**
 
 ## Install
 
@@ -79,7 +79,7 @@ PHP core [exec()](https://www.php.net/manual/en/function.exec.php) function enab
 
 ## License
 
-MIT License
+Moodle admin tool ImageOptimize is licensed under [GNU General Public License v3 (or later)](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ## Author
 
