@@ -87,13 +87,6 @@ class ImageOptimize
     protected $optipng = false;
 
     /**
-     * pngquant package enabled
-     *
-     * @var bool
-     */
-    protected $pngquant = false;
-
-    /**
      * Gifsicle package enabled
      *
      * @var bool
@@ -122,7 +115,7 @@ class ImageOptimize
     protected const COMPONENT = 'tool_imageoptimize';
 
     public const PACKAGES = [
-        'jpegoptim', 'optipng', 'pngquant', 'gifsicle',
+        'jpegoptim', 'optipng', 'gifsicle',
     ];
 
     public const PACKAGES_WEBP = [
@@ -137,7 +130,7 @@ class ImageOptimize
 
     public const PACKAGES_TYPES = [
         'jpg' => ['jpegoptim', 'webp'],
-        'png' => ['optipng', 'pngquant', 'webp'],
+        'png' => ['optipng'],
         'gif' => ['gifsicle'],
     ];
 
@@ -166,7 +159,6 @@ class ImageOptimize
         $this->exec = $this->execEnabled();
         $this->jpegoptim = $this->checkPackage('jpegoptim');
         $this->optipng = $this->checkPackage('optipng');
-        $this->pngquant = $this->checkPackage('pngquant');
         $this->gifsicle = $this->checkPackage('gifsicle');
         $this->webp = $this->checkPackage('webp');
     }
@@ -321,9 +313,9 @@ class ImageOptimize
         if ($ext = $ext ? $ext : $this->getExtension()) {
             switch ($ext) {
                 case 'jpg':
-                    return ($this->jpegoptim || $this->webp) ? true : false;
+                    return $this->jpegoptim || $this->webp;
                 case 'png':
-                    return ($this->optipng || $this->pngquant || $this->webp) ? true : false;
+                    return $this->optipng;
                 case 'gif':
                     return $this->gifsicle;
             }

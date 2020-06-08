@@ -2,7 +2,7 @@
     "name": "tigusigalpa/moodle_admin_tool_imageoptimize",
     "license": "GPL-3.0-or-later",
     "type": "library",
-    "keywords": ["php", "image", "optimize", "compress", "moodle", "jpegoptim", "optipng", "pngquant", "gifsicle", "webp"],
+    "keywords": ["php", "image", "optimize", "compress", "moodle", "jpegoptim", "optipng", "gifsicle", "webp"],
     "description": "Moodle admin tool to optimize images sizes on a create or update hooks",
     "autoload": {
         "psr-4" : {

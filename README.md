@@ -29,8 +29,6 @@ sudo apt-get install jpegoptim
 
 sudo apt-get install optipng
 
-sudo apt-get install pngquant
-
 sudo apt-get install gifsicle
 
 sudo apt-get install webp
@@ -42,8 +40,6 @@ sudo apt-get install webp
 sudo dnf install jpegoptim
 
 sudo dnf install optipng
-
-sudo dnf install pngquant
 
 sudo dnf install gifsicle
 
@@ -67,7 +63,6 @@ PHP core [exec()](https://www.php.net/manual/en/function.exec.php) function enab
 1. The plugin using composer package [spatie/image-optimizer](https://github.com/spatie/image-optimizer). Thanks to [Freek Van der Herten](https://github.com/freekmurze)
 2. [jpegoptim](http://freshmeat.sourceforge.net/projects/jpegoptim)
 3. [OptiPNG](http://optipng.sourceforge.net/)
-4. [pngquant](https://pngquant.org/)
 5. [Gifsicle](http://www.lcdf.org/gifsicle/)
 6. [WebP](https://developers.google.com/speed/webp)
 

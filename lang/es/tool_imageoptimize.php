@@ -58,11 +58,6 @@ $string['optipng'] = '<strong><a href="http://optipng.sourceforge.net/" target="
                             <li><strong>Debian/Ubuntu</strong>: <code>sudo apt-get install optipng</code></li>
                             <li><strong>Fedora/RHEL/CentOS</strong>: <code>sudo dnf install optipng</code></li>
                         </ul>';
-$string['pngquant'] = '<strong><a href="https://pngquant.org/" target="_blank">pngquant</a></strong>
-                        <ul>
-                            <li><strong>Debian/Ubuntu</strong>: <code>sudo apt-get install pngquant</code></li>
-                            <li><strong>Fedora/RHEL/CentOS</strong>: <code>sudo dnf install pngquant</code></li>
-                        </ul>';
 $string['gifsicle'] = '<strong><a href="http://www.lcdf.org/gifsicle/" target="_blank">Gifsicle</a></strong>
                         <ul>
                             <li><strong>Debian/Ubuntu</strong>: <code>sudo apt-get install gifsicle</code></li>
