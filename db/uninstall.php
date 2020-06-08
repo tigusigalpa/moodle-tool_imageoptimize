@@ -28,7 +28,7 @@ function xmldb_tool_imageoptimize_uninstall()
     global $CFG;
     $dir = $CFG->tempdir . '/tool_imageoptimize';
     if (file_exists($dir) && is_dir($dir)) {
-        unlink($dir);
+        rmdir($dir);
     }
     return true;
 }
