@@ -48,10 +48,8 @@ if ($hassiteconfig) {
                 get_string('files_types', 'tool_imageoptimize'),
                 get_string('files_types_desc', 'tool_imageoptimize')
             ));
-            $settingsShow = true;
             foreach (array_keys(ImageOptimize::PACKAGES_TYPES) as $imageExtension) {
                 if (!$imageOptimize->canHandleFileExtension($imageExtension)) {
-                    $settingsShow = false;
                     $warning = get_string('warning_title', 'tool_imageoptimize') . '<ol>';
                     foreach (ImageOptimize::PACKAGES_TYPES[$imageExtension] as $package) {
                         $warning .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
@@ -89,28 +87,26 @@ if ($hassiteconfig) {
                     ));
                 }
             }
-            if ($settingsShow) {
-                $settings->add(new \admin_setting_heading(
-                    'tool_imageoptimize/settings',
-                    get_string('settings'),
-                    ''
-                ));
-                foreach (['create', 'update'] as $action) {
-                    $settings->add(new \admin_setting_configcheckbox(
-                        'tool_imageoptimize/' . $action,
-                        get_string($action),
-                        get_string($action . '_desc', 'tool_imageoptimize'),
-                        1
-                    ));
-                }
-                $settings->add(new \admin_setting_configtext(
-                    'tool_imageoptimize/more_than',
-                    get_string('more_than', 'tool_imageoptimize'),
-                    '',
-                    0,
-                    PARAM_INT
+            $settings->add(new \admin_setting_heading(
+                'tool_imageoptimize/settings',
+                get_string('settings'),
+                ''
+            ));
+            foreach (['create', 'update'] as $action) {
+                $settings->add(new \admin_setting_configcheckbox(
+                    'tool_imageoptimize/' . $action,
+                    get_string($action),
+                    get_string($action . '_desc', 'tool_imageoptimize'),
+                    1
                 ));
             }
+            $settings->add(new \admin_setting_configtext(
+                'tool_imageoptimize/more_than',
+                get_string('more_than', 'tool_imageoptimize'),
+                '',
+                0,
+                PARAM_INT
+            ));
         }
     } else {
         $settings->add(new Notification(
