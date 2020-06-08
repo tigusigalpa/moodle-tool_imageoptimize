@@ -23,8 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_tool_imageoptimize_uninstall()
-{
+function xmldb_tool_imageoptimize_uninstall() {
     global $CFG;
     $dir = $CFG->tempdir . '/tool_imageoptimize';
     if (file_exists($dir) && is_dir($dir)) {

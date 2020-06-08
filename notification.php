@@ -22,20 +22,17 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace Tigusigalpa\Moodle\Admin\Setting;
-
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once $CFG->libdir . '/adminlib.php';
+require_once($CFG->libdir . '/adminlib.php');
 
 /**
  * Notification panel
  *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class Notification extends \admin_setting
-{
+class tool_imageoptimize_notification extends admin_setting {
     /**
      * Notification type
      *
@@ -48,25 +45,23 @@ class Notification extends \admin_setting
      *
      * @param string $name unique ascii name, either 'mysetting' for settings that in config,
      *                     or 'myplugin/mysetting' for ones in config_plugins.
-     * @param string $visibleName heading
+     * @param string $visiblename heading
      * @param string $text text in box
      * @param string $type box type error|info|success|warning
      */
-    public function __construct($name, $visibleName, $text, $type = 'info')
-    {
+    public function __construct($name, $visiblename, $text, $type = 'info') {
         $this->nosave = true;
         if (in_array($type, ['error', 'info', 'success', 'warning'])) {
             $this->type = $type;
         }
-        parent::__construct($name, $visibleName, $text, '');
+        parent::__construct($name, $visiblename, $text, '');
     }
 
     /**
      * Always returns true
      * @return bool Always returns true
      */
-    public function get_setting()
-    {
+    public function get_setting() {
         return true;
     }
 
@@ -74,8 +69,7 @@ class Notification extends \admin_setting
      * Never write settings
      * @return string Always returns an empty string
      */
-    public function write_setting($data)
-    {
+    public function write_setting($data) {
         // do not write any setting
         return '';
     }
@@ -87,7 +81,7 @@ class Notification extends \admin_setting
      * @param string $query
      * @return string Returns an HTML string
      */
-    public function output_html($data, $query='') {
+    public function output_html($data, $query = '') {
         global $OUTPUT;
         $context = [
             'message' => $this->description

@@ -4,17 +4,9 @@
     "type": "library",
     "keywords": ["php", "image", "optimize", "compress", "moodle", "jpegoptim", "optipng", "gifsicle", "webp"],
     "description": "Moodle admin tool to optimize images sizes on a create or update hooks",
-    "autoload": {
-        "psr-4" : {
-            "Tigusigalpa\\": "src/"
-        }
-    },
     "require": {
         "php": ">=7.2.0",
         "spatie/image-optimizer": "^1.2"
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "3.5.4"
     },
     "authors": [
         {

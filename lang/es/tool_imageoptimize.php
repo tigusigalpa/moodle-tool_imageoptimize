@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Image optimization';
+$string['pluginname'] = 'Optimización de imagen';
 
 $string['files_types'] = 'Tipo de archivos';
 $string['files_types_desc'] = 'Seleccione los tipos de archivo a los cuales la optimización será aplicada';

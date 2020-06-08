@@ -22,85 +22,83 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-require_once __DIR__ . '/autoload.php';
-
-use Tigusigalpa\Moodle\Admin\Tool\ImageOptimize\ImageOptimize;
-use Tigusigalpa\Moodle\Admin\Setting\Notification;
+require_once('image_optimize.php');
+require_once('notification.php');
 
 if ($hassiteconfig) {
-    $imageOptimize = new ImageOptimize();
-    $settings = new \admin_settingpage('tool_imageoptimize', get_string('pluginname', 'tool_imageoptimize'));
+    $imageOptimize = new tool_image_optimize();
+    $settings = new admin_settingpage('tool_imageoptimize', get_string('pluginname', 'tool_imageoptimize'));
     $ADMIN->add('tools', $settings);
 
-    if ($imageOptimize->getOSCheck()) {
-        if (!$imageOptimize->getExec()) {
-            $settings->add(new Notification(
+    if ($imageOptimize->get_os_check()) {
+        if (!$imageOptimize->get_exec()) {
+            $settings->add(new tool_imageoptimize_notification(
                 'tool_imageoptimize/exec_warning',
                 'exec_warning',
                 get_string('exec_warning', 'tool_imageoptimize'),
                 'warning'
             ));
         } else {
-            $settings->add(new \admin_setting_heading(
+            $settings->add(new admin_setting_heading(
                 'tool_imageoptimize/heading',
                 get_string('files_types', 'tool_imageoptimize'),
                 get_string('files_types_desc', 'tool_imageoptimize')
             ));
-            foreach (array_keys(ImageOptimize::PACKAGES_TYPES) as $imageExtension) {
-                if (!$imageOptimize->canHandleFileExtension($imageExtension)) {
+            foreach (array_keys(tool_image_optimize::PACKAGES_TYPES) as $imageextension) {
+                if (!$imageOptimize->can_handle_file_extension($imageextension)) {
                     $warning = get_string('warning_title', 'tool_imageoptimize') . '<ol>';
-                    foreach (ImageOptimize::PACKAGES_TYPES[$imageExtension] as $package) {
+                    foreach (tool_image_optimize::PACKAGES_TYPES[$imageextension] as $package) {
                         $warning .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
                     }
                     $warning .= '</ol>';
-                    $settings->add(new Notification(
-                        'tool_imageoptimize/' . $imageExtension . '_head_warninig',
-                        $imageExtension . '_head_warninig',
+                    $settings->add(new tool_imageoptimize_notification(
+                        'tool_imageoptimize/' . $imageextension . '_head_warninig',
+                        $imageextension . '_head_warninig',
                         $warning,
                         'warning'
                     ));
                 } else {
                     $info = '';
-                    foreach (ImageOptimize::PACKAGES_TYPES[$imageExtension] as $package) {
-                        if (!$imageOptimize->checkPackage($package)) {
+                    foreach (tool_image_optimize::PACKAGES_TYPES[$imageextension] as $package) {
+                        if (!$imageOptimize->check_package($package)) {
                             $info .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
                         }
                     }
                     if ($info) {
-                        $settings->add(new Notification(
-                            'tool_imageoptimize/' . $imageExtension . '_warning',
-                            $imageExtension . '_warning',
+                        $settings->add(new tool_imageoptimize_notification(
+                            'tool_imageoptimize/' . $imageextension . '_warning',
+                            $imageextension . '_warning',
                             get_string(
                                 'info_title',
                                 'tool_imageoptimize',
-                                \core_text::strtoupper($imageExtension)
+                                core_text::strtoupper($imageextension)
                             ) . '<ol>' . $info . '</ol>'
                         ));
                     }
-                    $settings->add(new \admin_setting_configcheckbox(
-                        'tool_imageoptimize/' . $imageExtension . '_enabled',
-                        \core_text::strtoupper($imageExtension),
+                    $settings->add(new admin_setting_configcheckbox(
+                        'tool_imageoptimize/' . $imageextension . '_enabled',
+                        core_text::strtoupper($imageextension),
                         '',
-                        ImageOptimize::DEFAULTS[$imageExtension]
+                        tool_image_optimize::DEFAULTS[$imageextension]
                     ));
                 }
             }
-            $settings->add(new \admin_setting_heading(
+            $settings->add(new admin_setting_heading(
                 'tool_imageoptimize/settings',
                 get_string('settings'),
                 ''
             ));
             foreach (['create', 'update'] as $action) {
-                $settings->add(new \admin_setting_configcheckbox(
+                $settings->add(new admin_setting_configcheckbox(
                     'tool_imageoptimize/' . $action,
                     get_string($action),
                     get_string($action . '_desc', 'tool_imageoptimize'),
                     1
                 ));
             }
-            $settings->add(new \admin_setting_configtext(
+            $settings->add(new admin_setting_configtext(
                 'tool_imageoptimize/more_than',
                 get_string('more_than', 'tool_imageoptimize'),
                 '',
@@ -109,7 +107,7 @@ if ($hassiteconfig) {
             ));
         }
     } else {
-        $settings->add(new Notification(
+        $settings->add(new tool_imageoptimize_notification(
             'tool_imageoptimize/os_warning',
             'os_warning',
             get_string('os_warning', 'tool_imageoptimize', php_uname('s') . ' ' .

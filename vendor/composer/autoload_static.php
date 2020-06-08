@@ -6,13 +6,14 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitf1d8c2ea40320469467283784273bd4f
 {
+    public static $files = array (
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
-        'T' => 
-        array (
-            'Tigusigalpa\\' => 12,
-        ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Component\\Process\\' => 26,
             'Spatie\\ImageOptimizer\\' => 22,
         ),
@@ -23,9 +24,9 @@ class ComposerStaticInitf1d8c2ea40320469467283784273bd4f
     );
 
     public static $prefixDirsPsr4 = array (
-        'Tigusigalpa\\' => 
+        'Symfony\\Polyfill\\Php80\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Component\\Process\\' => 
         array (
@@ -41,11 +42,17 @@ class ComposerStaticInitf1d8c2ea40320469467283784273bd4f
         ),
     );
 
+    public static $classMap = array (
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitf1d8c2ea40320469467283784273bd4f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitf1d8c2ea40320469467283784273bd4f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitf1d8c2ea40320469467283784273bd4f::$classMap;
 
         }, null, ClassLoader::class);
     }

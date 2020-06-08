@@ -22,37 +22,33 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-require_once 'autoload.php';
-
-use Tigusigalpa\Moodle\Admin\Tool\ImageOptimize\ImageOptimize;
+require_once('image_optimize.php');
 
 /**
  * Handle 'after_file_created' hook
  *
- * @param \stdClass $fileRecord File record object
+ * @param stdClass $filerecord File record object
  *
  * @return bool
  * @throws \dml_exception
  */
-function tool_imageoptimize_after_file_created(\stdClass $fileRecord)
-{
-    $obj = new ImageOptimize($fileRecord);
+function tool_imageoptimize_after_file_created(stdClass $filerecord) {
+    $obj = new tool_image_optimize($filerecord);
     return $obj->handle('create');
 }
 
 /**
  * Handle 'after_file_updated' hook
  *
- * @param \stdClass $fileRecord
- * @param \stdClass $sourceFileRecord
+ * @param stdClass $filerecord
+ * @param stdClass $sourcefilerecord
  *
  * @return bool
  * @throws \dml_exception
  */
-function tool_imageoptimize_after_file_updated(\stdClass $fileRecord, \stdClass $sourceFileRecord)
-{
-    $obj = new ImageOptimize($fileRecord, $sourceFileRecord);
+function tool_imageoptimize_after_file_updated(stdClass $filerecord, stdClass $sourcefilerecord) {
+    $obj = new tool_image_optimize($filerecord, $sourcefilerecord);
     return $obj->handle('update');
 }

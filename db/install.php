@@ -22,8 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_tool_imageoptimize_install()
-{
+function xmldb_tool_imageoptimize_install() {
     make_temp_directory('tool_imageoptimize');
     return true;
 }

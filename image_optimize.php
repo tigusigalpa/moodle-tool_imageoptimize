@@ -22,20 +22,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace Tigusigalpa\Moodle\Admin\Tool\ImageOptimize;
+defined('MOODLE_INTERNAL') || die();
 
+require_once('vendor/autoload.php');
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
-defined('MOODLE_INTERNAL') || die;
-
-class ImageOptimize
-{
+class tool_image_optimize {
     /**
      * Check OS
      *
      * @var bool
      */
-    protected $osCheck = false;
+    protected $oscheck = false;
 
     /**
      * PHP exec() function enabled
@@ -63,14 +61,14 @@ class ImageOptimize
      *
      * @var \stdClass|null
      */
-    protected $fileRecord = null;
+    protected $filerecord = null;
 
     /**
      * Source file record object (update hook)
      *
      * @var \stdClass|null
      */
-    protected $sourceFileRecord = null;
+    protected $sourcefilerecord = null;
 
     /**
      * JpegOptim package enabled
@@ -105,7 +103,7 @@ class ImageOptimize
      *
      * @var string
      */
-    protected $tempDir = '';
+    protected $tempdir = '';
 
     /**
      * Current component name
@@ -115,11 +113,11 @@ class ImageOptimize
     protected const COMPONENT = 'tool_imageoptimize';
 
     public const PACKAGES = [
-        'jpegoptim', 'optipng', 'gifsicle',
+        'jpegoptim', 'optipng', 'gifsicle'
     ];
 
     public const PACKAGES_WEBP = [
-        'cwebp', 'dwebp', 'vwebp', 'webpmux',
+        'cwebp', 'dwebp', 'vwebp', 'webpmux'
     ];
 
     public const DEFAULTS = [
@@ -131,36 +129,35 @@ class ImageOptimize
     public const PACKAGES_TYPES = [
         'jpg' => ['jpegoptim', 'webp'],
         'png' => ['optipng'],
-        'gif' => ['gifsicle'],
+        'gif' => ['gifsicle']
     ];
 
     public const FILES_TYPES = [
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
-        'image/gif'  => 'gif',
+        'image/gif'  => 'gif'
     ];
 
-    public function __construct(\stdClass $fileRecord = null, \stdClass $sourceFileRecord = null)
-    {
+    public function __construct(stdClass $filerecord = null, stdClass $sourcefilerecord = null) {
         global $CFG, $DB;
         $this->cfg = $CFG;
         $this->db = $DB;
-        $this->tempDir = $this->cfg->tempdir . '/tool_imageoptimize';
-        if (!file_exists($this->tempDir) || !is_dir($this->tempDir)) {
+        $this->tempdir = $this->cfg->tempdir . '/tool_imageoptimize';
+        if (!file_exists($this->tempdir) || !is_dir($this->tempdir)) {
             make_temp_directory('tool_imageoptimize');
         }
-        if ($fileRecord) {
-            $this->fileRecord = $fileRecord;
+        if ($filerecord) {
+            $this->filerecord = $filerecord;
         }
-        if ($sourceFileRecord) {
-            $this->sourceFileRecord = $sourceFileRecord;
+        if ($sourcefilerecord) {
+            $this->sourcefilerecord = $sourcefilerecord;
         }
-        $this->osCheck = $this->osCheck();
-        $this->exec = $this->execEnabled();
-        $this->jpegoptim = $this->checkPackage('jpegoptim');
-        $this->optipng = $this->checkPackage('optipng');
-        $this->gifsicle = $this->checkPackage('gifsicle');
-        $this->webp = $this->checkPackage('webp');
+        $this->oscheck = $this->os_check();
+        $this->exec = $this->exec_enabled();
+        $this->jpegoptim = $this->check_package('jpegoptim');
+        $this->optipng = $this->check_package('optipng');
+        $this->gifsicle = $this->check_package('gifsicle');
+        $this->webp = $this->check_package('webp');
     }
 
     /**
@@ -168,19 +165,17 @@ class ImageOptimize
      *
      * @return bool
      */
-    public function getExec() : bool
-    {
+    public function get_exec() : bool {
         return $this->exec;
     }
 
     /**
-     * Get $osCheck value
+     * Get $oscheck value
      *
      * @return bool
      */
-    public function getOSCheck() : bool
-    {
-        return $this->osCheck;
+    public function get_os_check() : bool {
+        return $this->oscheck;
     }
 
     /**
@@ -191,8 +186,7 @@ class ImageOptimize
      * @return mixed
      * @throws \dml_exception
      */
-    public static function getConfig(string $name = '')
-    {
+    public static function get_config(string $name = '') {
         return get_config(self::COMPONENT, $name ? $name : null);
     }
 
@@ -203,8 +197,7 @@ class ImageOptimize
      *
      * @return int
      */
-    public static function kbToB(int $kb) : int
-    {
+    public static function kb_to_b(int $kb) : int {
         return $kb * 1024;
     }
 
@@ -213,9 +206,8 @@ class ImageOptimize
      *
      * @return bool
      */
-    protected function execEnabled() : bool
-    {
-        if ($this->getOSCheck()) {
+    protected function exec_enabled() : bool {
+        if ($this->get_os_check()) {
             return !in_array('exec', explode(',', ini_get('disable_functions')));
         }
         return false;
@@ -226,8 +218,7 @@ class ImageOptimize
      *
      * @return string
      */
-    public function osCheck() : string
-    {
+    public function os_check() : string {
         switch ($this->cfg->ostype) {
             case 'UNIX':
                 return $this->cfg->ostype;
@@ -242,9 +233,8 @@ class ImageOptimize
      *
      * @return bool
      */
-    protected function checkPackageCommand(string $name) : bool
-    {
-        switch ($this->getOSCheck()) {
+    protected function check_package_command(string $name) : bool {
+        switch ($this->get_os_check()) {
             case 'UNIX':
                 if (!exec('which ' . $name)) {
                     if (!exec('rpm -qa | grep ' . $name) || !exec('rpm -qa | grep -i ' . $name)
@@ -266,18 +256,17 @@ class ImageOptimize
      *
      * @return bool
      */
-    public function checkPackage(string $name) : bool
-    {
-        if ($this->getExec()) {
+    public function check_package(string $name) : bool {
+        if ($this->get_exec()) {
             if ($name != 'webp') {
                 if (in_array($name, self::PACKAGES)) {
-                    if ($this->checkPackageCommand($name)) {
+                    if ($this->check_package_command($name)) {
                         return true;
                     }
                 }
             } else {
                 foreach (self::PACKAGES_WEBP as $webPLib) {
-                    if (!$this->checkPackageCommand($webPLib)) {
+                    if (!$this->check_package_command($webPLib)) {
                         return false;
                     }
                 }
@@ -292,11 +281,10 @@ class ImageOptimize
      *
      * @return string
      */
-    public function getExtension() : string
-    {
-        if (isset(self::FILES_TYPES[$this->fileRecord->mimetype])
-            && !empty(self::FILES_TYPES[$this->fileRecord->mimetype])) {
-            return self::FILES_TYPES[$this->fileRecord->mimetype];
+    public function get_extension() : string {
+        if (isset(self::FILES_TYPES[$this->filerecord->mimetype])
+            && !empty(self::FILES_TYPES[$this->filerecord->mimetype])) {
+            return self::FILES_TYPES[$this->filerecord->mimetype];
         }
         return '';
     }
@@ -308,9 +296,8 @@ class ImageOptimize
      *
      * @return bool
      */
-    public function canHandleFileExtension(string $ext = '') : bool
-    {
-        if ($ext = $ext ? $ext : $this->getExtension()) {
+    public function can_handle_file_extension(string $ext = '') : bool {
+        if ($ext = $ext ? $ext : $this->get_extension()) {
             switch ($ext) {
                 case 'jpg':
                     return $this->jpegoptim || $this->webp;
@@ -331,18 +318,17 @@ class ImageOptimize
      * @return bool
      * @throws \dml_exception
      */
-    protected function canHandle(string $action) : bool
-    {
-        if (self::getConfig($action)) {
-            $moreThan = self::getConfig('more_than');
-            if ($this->fileRecord->filesize > 0
-                && (!$moreThan || ($moreThan > 0 && (self::kbToB($moreThan) < $this->fileRecord->filesize)))
-                && $this->fileRecord->filearea !== 'draft') {
-                if (isset($this->fileRecord->mimetype) && !empty($this->fileRecord->mimetype)) {
-                    if (isset(self::FILES_TYPES[$this->fileRecord->mimetype])
-                        && !empty(self::FILES_TYPES[$this->fileRecord->mimetype])) {
-                        if ($this->canHandleFileExtension()) {
-                            if (self::getConfig(self::FILES_TYPES[$this->fileRecord->mimetype] . '_enabled')) {
+    protected function can_handle(string $action) : bool {
+        if (self::get_config($action)) {
+            $moreThan = self::get_config('more_than');
+            if ($this->filerecord->filesize > 0
+                && (!$moreThan || ($moreThan > 0 && (self::kb_to_b($moreThan) < $this->filerecord->filesize)))
+                && $this->filerecord->filearea !== 'draft') {
+                if (isset($this->filerecord->mimetype) && !empty($this->filerecord->mimetype)) {
+                    if (isset(self::FILES_TYPES[$this->filerecord->mimetype])
+                        && !empty(self::FILES_TYPES[$this->filerecord->mimetype])) {
+                        if ($this->can_handle_file_extension()) {
+                            if (self::get_config(self::FILES_TYPES[$this->filerecord->mimetype] . '_enabled')) {
                                 return true;
                             }
                         }
@@ -361,33 +347,32 @@ class ImageOptimize
      * @return bool
      * @throws \dml_exception
      */
-    public function handle(string $action) : bool
-    {
-        if ($this->canHandle($action)) {
+    public function handle(string $action) : bool {
+        if ($this->can_handle($action)) {
             if ($fileStorage = get_file_storage()) {
                 if ($fileSystem = $fileStorage->get_file_system()) {
-                    if ($instance = $fileStorage->get_file_by_id($this->fileRecord->id)) {
+                    if ($instance = $fileStorage->get_file_by_id($this->filerecord->id)) {
                         $fromFileContent = $fileSystem->get_content($instance);
                         $fromFileSourcePath = $fileSystem->get_local_path_from_storedfile($instance);
-                        $fromFilePath = $this->tempFilePath();
-                        $toFilePath = $this->tempFilePath();
+                        $fromFilePath = $this->temp_file_path();
+                        $toFilePath = $this->temp_file_path();
                         file_put_contents($fromFilePath, $fromFileContent);
                         if (file_exists($fromFilePath)) {
                             $optimizerChain = OptimizerChainFactory::create();
                             $optimizerChain->optimize($fromFilePath, $toFilePath);
                             $toFileContent = file_get_contents($toFilePath);
-                            $this->fileRecord->pathnamehash = \file_storage::get_pathname_hash(
-                                $this->fileRecord->contextid,
-                                $this->fileRecord->component,
-                                $this->fileRecord->filearea,
-                                $this->fileRecord->itemid,
-                                $this->fileRecord->filepath,
-                                $this->fileRecord->filename
+                            $this->filerecord->pathnamehash = \file_storage::get_pathname_hash(
+                                $this->filerecord->contextid,
+                                $this->filerecord->component,
+                                $this->filerecord->filearea,
+                                $this->filerecord->itemid,
+                                $this->filerecord->filepath,
+                                $this->filerecord->filename
                             );
-                            list($this->fileRecord->contenthash, $this->fileRecord->filesize, $newFile) = $fileSystem
+                            list($this->filerecord->contenthash, $this->filerecord->filesize, $newFile) = $fileSystem
                                 ->add_file_from_string($toFileContent);
                             if ($newFile) {
-                                $this->db->update_record('files', $this->fileRecord);
+                                $this->db->update_record('files', $this->filerecord);
                                 @unlink($fromFileSourcePath);
                             }
                             @unlink($fromFilePath);
@@ -405,8 +390,7 @@ class ImageOptimize
      *
      * @return string
      */
-    public function tempFilePath() : string
-    {
-        return $this->tempDir . '/' . random_string() . '.' . $this->getExtension();
+    public function temp_file_path() : string {
+        return $this->tempdir . '/' . random_string() . '.' . $this->get_extension();
     }
 }
