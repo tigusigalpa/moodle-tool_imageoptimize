@@ -99,13 +99,6 @@ class tool_image_optimize {
     protected $webp = false;
 
     /**
-     * Component temporary directory
-     *
-     * @var string
-     */
-    protected $tempdir = '';
-
-    /**
      * Current component name
      *
      * @var string
@@ -142,10 +135,6 @@ class tool_image_optimize {
         global $CFG, $DB;
         $this->cfg = $CFG;
         $this->db = $DB;
-        $this->tempdir = $this->cfg->tempdir . '/tool_imageoptimize';
-        if (!file_exists($this->tempdir) || !is_dir($this->tempdir)) {
-            make_temp_directory('tool_imageoptimize');
-        }
         if ($filerecord) {
             $this->filerecord = $filerecord;
         }
@@ -391,6 +380,6 @@ class tool_image_optimize {
      * @return string
      */
     public function temp_file_path() : string {
-        return $this->tempdir . '/' . random_string() . '.' . $this->get_extension();
+        return sys_get_temp_dir() . '/' . random_string() . '.' . $this->get_extension();
     }
 }
