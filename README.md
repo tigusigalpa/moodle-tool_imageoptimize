@@ -54,7 +54,7 @@ PHP core [exec()](https://www.php.net/manual/en/function.exec.php) function enab
 
 1. Download with any cases below
     1. Go to [Moodle plugin page](https://moodle.org/plugins/tool_imageoptimize) and download ZIP file with the latest version
-    2. [Download here](https://github.com/tigusigalpa/moodle_admin_tool_imageoptimize/archive/master.zip)
+    2. [Download here](https://github.com/tigusigalpa/moodle-tool_imageoptimize/archive/master.zip)
 2. As an administrator go this way: ```Site administration -> Plugins -> Install plugins```
 3. Drop or choose a ZIP file to the **ZIP package** field, click **Install plugin from the ZIP file**
 
@@ -63,8 +63,8 @@ PHP core [exec()](https://www.php.net/manual/en/function.exec.php) function enab
 1. The plugin using composer package [spatie/image-optimizer](https://github.com/spatie/image-optimizer). Thanks to [Freek Van der Herten](https://github.com/freekmurze)
 2. [jpegoptim](http://freshmeat.sourceforge.net/projects/jpegoptim)
 3. [OptiPNG](http://optipng.sourceforge.net/)
-5. [Gifsicle](http://www.lcdf.org/gifsicle/)
-6. [WebP](https://developers.google.com/speed/webp)
+4. [Gifsicle](http://www.lcdf.org/gifsicle/)
+5. [WebP](https://developers.google.com/speed/webp)
 
 ## Languages
 
