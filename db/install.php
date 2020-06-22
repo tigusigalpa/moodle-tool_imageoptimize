@@ -23,6 +23,5 @@
  */
 
 function xmldb_tool_imageoptimize_install() {
-    make_temp_directory('tool_imageoptimize');
     return true;
 }

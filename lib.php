@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once('image_optimize.php');
+require_once('tool_imageoptimize.php');
 
 /**
  * Handle 'after_file_created' hook
