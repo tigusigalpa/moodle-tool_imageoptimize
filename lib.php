@@ -35,8 +35,10 @@ require_once('tool_imageoptimize.php');
  * @throws \dml_exception
  */
 function tool_imageoptimize_after_file_created(stdClass $filerecord) {
-    $obj = new tool_image_optimize($filerecord);
-    return $obj->handle('create');
+    if (empty(get_config('tool_imageoptimize', 'enablebackgroundoptimizing'))) {
+        $obj = new tool_image_optimize($filerecord);
+        return $obj->handle('create');
+    }
 }
 
 /**
@@ -49,6 +51,18 @@ function tool_imageoptimize_after_file_created(stdClass $filerecord) {
  * @throws \dml_exception
  */
 function tool_imageoptimize_after_file_updated(stdClass $filerecord, stdClass $sourcefilerecord) {
-    $obj = new tool_image_optimize($filerecord, $sourcefilerecord);
-    return $obj->handle('update');
+    if (empty(get_config('tool_imageoptimize', 'enablebackgroundoptimizing'))) {
+        $obj = new tool_image_optimize($filerecord, $sourcefilerecord);
+        return $obj->handle('update');
+    }
+}
+
+/**
+ * Handle 'after_file_deleted' hook
+ * 
+ * @param stdClass $fielobject
+ */
+function tool_imageoptimize_after_file_deleted(stdClass $fileobject) {
+    global $DB;
+    $DB->delete_records('tool_imageoptimize_files', ['contenthashnew' => $fileobject->contenthash]);
 }

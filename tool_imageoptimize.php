@@ -227,9 +227,9 @@ class tool_image_optimize {
             case 'UNIX':
                 if (!exec('which ' . $name)) {
                     // +++ MBS-HACK (Peter Mayer) Do not install  the needed packages automatically. (MBS-5165)
-                    // This is important for moodle instances with a cluster of webservers. Because the script only runs once.             
+                    // This is important for moodle instances with a cluster of webservers. Because the script only runs once.
                     return false;
-                    // --- MBS-HACK (Peter Mayer) Do not install  the needed packages automatically. (MBS-5165)
+                    // --- MBS-HACK (Peter Mayer)
 
                     if (!exec('rpm -qa | grep ' . $name) || !exec('rpm -qa | grep -i ' . $name)
                         || !exec('yum list installed|grep \'' . $name . '\'')) {
