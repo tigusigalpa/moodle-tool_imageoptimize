@@ -114,8 +114,8 @@ class tool_image_optimize {
     ];
 
     public const DEFAULTS = [
-        'jpg' => 1,
-        'png' => 1,
+        'jpg' => 0,  // +++ MBS-HACK (Peter Mayer).
+        'png' => 0,  // +++ MBS-HACK (Peter Mayer).
         'gif' => 0,
     ];
 
@@ -226,6 +226,11 @@ class tool_image_optimize {
         switch ($this->get_os_check()) {
             case 'UNIX':
                 if (!exec('which ' . $name)) {
+                    // +++ MBS-HACK (Peter Mayer) Do not install  the needed packages automatically. (MBS-5165)
+                    // This is important for moodle instances with a cluster of webservers. Because the script only runs once.             
+                    return false;
+                    // --- MBS-HACK (Peter Mayer) Do not install  the needed packages automatically. (MBS-5165)
+
                     if (!exec('rpm -qa | grep ' . $name) || !exec('rpm -qa | grep -i ' . $name)
                         || !exec('yum list installed|grep \'' . $name . '\'')) {
                         if (!exec('dpkg -s ' . $name)) {

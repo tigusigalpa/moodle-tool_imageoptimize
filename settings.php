@@ -95,7 +95,7 @@ if ($hassiteconfig) {
                     'tool_imageoptimize/' . $action,
                     get_string($action),
                     get_string($action . '_desc', 'tool_imageoptimize'),
-                    1
+                    0
                 ));
             }
             $settings->add(new admin_setting_configtext(
