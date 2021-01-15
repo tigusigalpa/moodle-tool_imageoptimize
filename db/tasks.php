@@ -15,16 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Task for tool_imageoptimize.
  *
- * @package   tool_imageoptimize
- * @copyright 2020 Igor Sazonov <sovletig@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_imageoptimize
+ * @copyright  2021 ISB Bayern
+ * @author     Peter Mayer, peter.mayer@isb.bayern.de
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020060803; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2019111800; // Requires this Moodle version.
-$plugin->release   = '1.0.2 (Build: 2020060800)';
-$plugin->component = 'tool_imageoptimize'; // Full name of the plugin (used for diagnostics).
+$tasks = array(
+    array(
+        'classname' => '\tool_imageoptimize\task\optimize_task',
+        'blocking' => 0,
+        'minute' => '*/3',
+        'hour' => '0-4,21-23',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
+    )
+);
