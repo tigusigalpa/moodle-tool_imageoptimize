@@ -1,3 +1,8 @@
+/.idea/
+.idea
+/.idea
+composer.phar
+composer.lock
 .remote-sync.json
 composer.*
 node_modules
