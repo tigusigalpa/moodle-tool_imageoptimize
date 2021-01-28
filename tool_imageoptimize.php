@@ -349,23 +349,32 @@ class tool_image_optimize {
                         if (file_exists($fromFilePath)) {
                             $optimizerChain = OptimizerChainFactory::create();
                             $optimizerChain->optimize($fromFilePath, $toFilePath);
-                            $toFileContent = file_get_contents($toFilePath);
-                            $this->filerecord->pathnamehash = \file_storage::get_pathname_hash(
-                                $this->filerecord->contextid,
-                                $this->filerecord->component,
-                                $this->filerecord->filearea,
-                                $this->filerecord->itemid,
-                                $this->filerecord->filepath,
-                                $this->filerecord->filename
-                            );
-                            list($this->filerecord->contenthash, $this->filerecord->filesize, $newFile) = $fileSystem
-                                ->add_file_from_string($toFileContent);
-                            if ($newFile) {
-                                $this->db->update_record('files', $this->filerecord);
-                                @unlink($fromFileSourcePath);
+
+                            if (file_exists($toFilePath) && filesize($toFilePath) > 0) {
+                                $originalhash = $this->filerecord->contenthash;
+                                $newhash = sha1_file($toFilePath);
+
+                                global $CFG;
+                                $newpath = $CFG->dataroot . '/filedir/' . substr($newhash,0,2) . '/' . substr($newhash,2,2) . '/';
+                                if (!is_dir($newpath)) {
+                                    @mkdir($newpath, 0777, true);
+                                }
+                                $target = $newpath . $newhash;
+                                @rename($toFilePath, $target);
+                                if (file_exists($target) && filesize($target) > 0) {
+                                    $sql = "UPDATE {files}
+                                                SET contenthash=?,filesize=?
+                                                WHERE contenthash=?";
+                                    $params = array(
+                                        $newhash,
+                                        filesize($target),
+                                        $originalhash,
+                                    );
+                                    $this->db->execute($sql, $params);
+                                    @unlink($fromFileSourcePath);
+                                    @unlink($fromFilePath);
+                                }
                             }
-                            @unlink($fromFilePath);
-                            @unlink($toFilePath);
                         }
                     }
                 }
