@@ -44,7 +44,7 @@ list($options, $unrecognized) = cli_get_params([
 if ($options['help']) {
     mtrace(
         "
-        This script will bulk create a series of test courses with dummy data.
+        This script will optimize a bulk of images with no or less quality loss.
 
         --'execute'         will execute the script with all it's changes to DB [DANGER-MODE!].
         --'chunksize'       the maximum amound of images processed during one script call. If not set

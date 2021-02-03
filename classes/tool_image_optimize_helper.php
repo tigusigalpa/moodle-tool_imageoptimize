@@ -119,6 +119,9 @@ class tool_image_optimize_helper extends \tool_image_optimize {
 
         $this->get_enabled_mimetypes();
         if (empty($this->enabledmimetypes)) {
+            if (CLI_SCRIPT) {
+                mtrace("No mimetypes are enabled for optimization.");
+            }
             return [];
         }
         list($insqlmimetypes, $paramsmimetypes) = $DB->get_in_or_equal($this->enabledmimetypes);
@@ -293,7 +296,7 @@ class tool_image_optimize_helper extends \tool_image_optimize {
         if ((CLI_SCRIPT && !$this->calledbytask) || !empty($this->dryrun)) {
             mtrace("The file " . $file->filename . " was optimized:\n
     Old vs. New Contenthash: " . $fileold->contenthash . " vs " . $file->contenthash . "\n
-    Old vs. New Filesize: " . $fileold->filesize . " vs " . $file->filesize . "\n\n");
+    Old vs. New Filesize: " . $fileold->filesize . " vs " . $file->filesize . " => -" . round((1 - ($file->filesize / $fileold->filesize)) * 100, 2) . "%\n\n");
         }
 
         if (!empty($this->dryrun)) {

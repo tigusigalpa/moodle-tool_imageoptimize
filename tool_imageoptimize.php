@@ -142,11 +142,11 @@ class tool_image_optimize {
             $this->sourcefilerecord = $sourcefilerecord;
         }
         $this->oscheck = $this->os_check();
-        $this->exec = $this->exec_enabled();
-        $this->jpegoptim = $this->check_package('jpegoptim');
-        $this->optipng = $this->check_package('optipng');
-        $this->gifsicle = $this->check_package('gifsicle');
-        $this->webp = $this->check_package('webp');
+        // $this->exec = $this->exec_enabled();
+        // $this->jpegoptim = $this->check_package('jpegoptim');
+        // $this->optipng = $this->check_package('optipng');
+        // $this->gifsicle = $this->check_package('gifsicle');
+        // $this->webp = $this->check_package('webp');
     }
 
     /**
