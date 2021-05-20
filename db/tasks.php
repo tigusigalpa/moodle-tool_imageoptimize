@@ -36,7 +36,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => '\tool_imageoptimize\task\fill_imageoptimze_table_task',
+        'classname' => '\tool_imageoptimize\task\fill_imageoptimize_table_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '21-23,0-6',

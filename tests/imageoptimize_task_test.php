@@ -107,7 +107,7 @@ class imageoptimize_task_test extends advanced_testcase {
     /**
      * Test cases for task to import files to imageoptimze_table.
      */
-    public function test_fill_imageoptimze_table_task() {
+    public function test_fill_imageoptimize_table_task() {
         global $DB;
 
         // Cleanup imageoptimize_files table.

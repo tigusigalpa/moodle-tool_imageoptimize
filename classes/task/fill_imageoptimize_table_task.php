@@ -43,7 +43,7 @@ class fill_imageoptimize_table_task extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('taskoptimize', 'tool_imageoptimize');
+        return get_string('taskoptimize_fill_table', 'tool_imageoptimize');
     }
 
     /**
