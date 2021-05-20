@@ -28,11 +28,11 @@ require_once('tool_imageoptimize.php');
 require_once('notification.php');
 
 if ($hassiteconfig) {
-    $imageOptimize = new tool_image_optimize();
+    $imageoptimize = new tool_image_optimize();
     $settings = new admin_settingpage('tool_imageoptimize', get_string('pluginname', 'tool_imageoptimize'));
     $ADMIN->add('tools', $settings);
 
-    if (!$imageOptimize->get_os_check()) {
+    if (!$imageoptimize->get_os_check()) {
         $settings->add(new tool_imageoptimize_notification(
             'tool_imageoptimize/os_warning',
             'os_warning',
@@ -42,7 +42,7 @@ if ($hassiteconfig) {
         ));
     }
 
-    if (!$imageOptimize->get_exec()) {
+    if (!$imageoptimize->get_exec()) {
         $settings->add(new tool_imageoptimize_notification(
             'tool_imageoptimize/exec_warning',
             'exec_warning',
@@ -52,7 +52,7 @@ if ($hassiteconfig) {
     }
 
     foreach (array_keys(tool_image_optimize::PACKAGES_TYPES) as $imageextension) {
-        if (!$imageOptimize->can_handle_file_extension($imageextension)) {
+        if (!$imageoptimize->can_handle_file_extension($imageextension)) {
             $warning = get_string('warning_title', 'tool_imageoptimize') . '<ol>';
             foreach (tool_image_optimize::PACKAGES_TYPES[$imageextension] as $package) {
                 $warning .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
@@ -68,7 +68,7 @@ if ($hassiteconfig) {
 
         $info = '';
         foreach (tool_image_optimize::PACKAGES_TYPES[$imageextension] as $package) {
-            if (!$imageOptimize->check_package($package)) {
+            if (!$imageoptimize->check_package($package)) {
                 $info .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
             }
         }
@@ -129,6 +129,14 @@ if ($hassiteconfig) {
         get_string('enablebackgroundoptimizing', 'tool_imageoptimize'),
         get_string('enablebackgroundoptimizing_desc', 'tool_imageoptimize'),
         0
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'tool_imageoptimize/maxchunksizeimport',
+        get_string('maxchunksizeimport', 'tool_imageoptimize'),
+        '',
+        10000,
+        PARAM_INT
     ));
 
     $settings->add(new admin_setting_configtext(

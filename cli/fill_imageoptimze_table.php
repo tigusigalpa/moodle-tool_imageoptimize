@@ -15,35 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Handles upgrading instances of this plugin.
+ * Optimize images.
  *
- * @since      Moodle 3.8
  * @package    tool_imageoptimize
  * @copyright  2021 ISB Bayern
  * @author     Peter Mayer, peter.mayer@isb.bayern.de
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-/**
- * Handles upgrading instances of this plugin.
+define('CLI_SCRIPT', true);
 
- * @param int $oldversion
- * @return bool
- */
-function xmldb_tool_imageoptimize_upgrade($oldversion) {
-    global $CFG;
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->libdir."/clilib.php");
+require_once($CFG->dirroot ."/admin/tool/imageoptimize/classes/tool_image_optimize_helper.php");
 
-    require_once($CFG->dirroot . "/admin/tool/imageoptimize/db/upgradelib.php");
+core_php_time_limit::raise();
 
-    if ($oldversion < 2020060801) {
+// Increase memory limit.
+raise_memory_limit(MEMORY_EXTRA);
 
-        // Define table tool_imageoptimize_files to be created.
-        tool_imageoptimize_create_table();
+list($options, $unrecognized) = cli_get_params([
+    'help' => false
+]);
 
-        // Imageoptimize savepoint reached.
-        upgrade_plugin_savepoint(true, 2020060801, 'tool', 'imageoptimize');
-    }
-
-    return true;
+if ($options['help']) {
+    mtrace(
+        "
+        This script will populate the imageoptimize_files table.
+        You may have to run this script multiple times because of a chunk size limitation in the admin settings.
+        "
+    );
+    die;
 }
+
+$imageoptimizehelper = \tool_imageoptimize\tool_image_optimize_helper::get_instance();
+$imageoptimizehelper->task_call_populate_imageoptimze_table();

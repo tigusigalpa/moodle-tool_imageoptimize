@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => '\tool_imageoptimize\task\optimize_task',
         'blocking' => 0,
         'minute' => '*/3',
@@ -34,5 +34,14 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*'
-    )
-);
+    ],
+    [
+        'classname' => '\tool_imageoptimize\task\fill_imageoptimze_table_task',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '21-23,0-6',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
+    ]
+];
