@@ -21,6 +21,7 @@
       <INDEXES>
         <INDEX NAME="fileid" UNIQUE="true" FIELDS="fileid"/>
         <INDEX NAME="timeprocessed" UNIQUE="false" FIELDS="timeprocessed"/>
+        <INDEX NAME="contenthashold" UNIQUE="false" FIELDS="contenthashold"/>
       </INDEXES>
     </TABLE>
   </TABLES>

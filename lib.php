@@ -23,6 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+use tool_imageoptimize\tool_image_optimize_helper;
 
 require_once('tool_imageoptimize.php');
 
@@ -35,10 +36,19 @@ require_once('tool_imageoptimize.php');
  * @throws \dml_exception
  */
 function tool_imageoptimize_after_file_created(stdClass $filerecord) {
+    $imageoptimizehelper = tool_image_optimize_helper::get_instance();
+    $imageoptimizehelper->get_enabled_mimetypes();
+
+    if(!in_array($filerecord->mimetype,$imageoptimizehelper->enabledmimetypes)){
+        return false;
+    }
+
     if (empty(get_config('tool_imageoptimize', 'enablebackgroundoptimizing'))) {
         $obj = new tool_image_optimize($filerecord);
         return $obj->handle('create');
     }
+
+    $imageoptimizehelper->insert_fileinfo_depending_on_contenthash($filerecord);
 }
 
 /**
@@ -51,10 +61,19 @@ function tool_imageoptimize_after_file_created(stdClass $filerecord) {
  * @throws \dml_exception
  */
 function tool_imageoptimize_after_file_updated(stdClass $filerecord, stdClass $sourcefilerecord) {
+
+    $imageoptimizehelper = tool_image_optimize_helper::get_instance();
+    $imageoptimizehelper->get_enabled_mimetypes();
+
+    if(!in_array($filerecord->mimetype,$imageoptimizehelper->enabledmimetypes)){
+        return false;
+    }
+
     if (empty(get_config('tool_imageoptimize', 'enablebackgroundoptimizing'))) {
         $obj = new tool_image_optimize($filerecord, $sourcefilerecord);
         return $obj->handle('update');
     }
+
 }
 
 /**
@@ -64,5 +83,13 @@ function tool_imageoptimize_after_file_updated(stdClass $filerecord, stdClass $s
  */
 function tool_imageoptimize_after_file_deleted(stdClass $fileobject) {
     global $DB;
-    $DB->delete_records('tool_imageoptimize_files', ['contenthashnew' => $fileobject->contenthash]);
+
+    $imageoptimizehelper = tool_image_optimize_helper::get_instance();
+    $imageoptimizehelper->get_enabled_mimetypes();
+
+    if (!in_array($fileobject->mimetype, $imageoptimizehelper->enabledmimetypes)) {
+        return false;
+    }
+    
+    $DB->delete_records('tool_imageoptimize_files', ['contenthashold' => $fileobject->contenthash]);
 }

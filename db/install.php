@@ -22,6 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ /**
+  * Create tool_imageoptimize table on installation.
+  */
 function xmldb_tool_imageoptimize_install() {
+    global $CFG;
+    require_once($CFG->dirroot . "/admin/tool/imageoptimize/db/upgradelib.php");
+
+    // Create imageoptimize table.
+    tool_imageoptimize_create_table();
+
     return true;
 }

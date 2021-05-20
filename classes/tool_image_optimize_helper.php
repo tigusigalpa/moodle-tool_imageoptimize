@@ -31,6 +31,7 @@ require_once($CFG->dirroot . '/admin/tool/imageoptimize/vendor/autoload.php');
 require_once($CFG->dirroot . '/admin/tool/imageoptimize/tool_imageoptimize.php');
 use coding_exception;
 use \Spatie\ImageOptimizer\OptimizerChainFactory;
+use stdClass;
 
 /**
  * Helper class for image optimizer.
@@ -95,7 +96,7 @@ class tool_image_optimize_helper extends \tool_image_optimize {
      * Get all enabled mimetypes.
      * @return array
      */
-    private function get_enabled_mimetypes() :array {
+    public function get_enabled_mimetypes() :array {
 
         if (empty($this->enabledmimetypes)) {
             $this->enabledmimetypes = [];
@@ -124,15 +125,14 @@ class tool_image_optimize_helper extends \tool_image_optimize {
             }
             return [];
         }
-        list($insqlmimetypes, $paramsmimetypes) = $DB->get_in_or_equal($this->enabledmimetypes);
 
         switch ($this->config->filessortorder) {
             case "idasc":
-                $order = " ORDER BY f.id ASC";
+                $order = " ORDER BY fileid ASC";
                 break;
 
             case "iddesc":
-                $order = " ORDER BY f.id DESC";
+                $order = " ORDER BY fileid DESC";
                 break;
 
             default:
@@ -140,23 +140,31 @@ class tool_image_optimize_helper extends \tool_image_optimize {
                 break;
         }
 
-        // These complex query is necessary, to get only one file reference for a specific contenthash.
+        // These complex series of queries is necessary, to get only one file reference for a specific contenthash.
         // Otherwise there could be two files in one chunk with the same contenthash.
         // Because, all references would be processed by the first occurence.
         // The second call can not find the file with the old contenthash any more and mark it as 'not found'.
         // It could not be done by a simple group by because of PostgreSQL support.
-        $sql = "SELECT * FROM {files}
-                    WHERE id IN (
-                        SELECT (
-                            SELECT max(id) FROM {files} f2 WHERE f2.contenthash = f.contenthash 
-                        )
-                        FROM {files} f
-                        LEFT JOIN {tool_imageoptimize_files} tif on tif.fileid = f.id
-                            WHERE tif.id is null AND mimetype " . $insqlmimetypes . "
-                            GROUP BY f.id, contenthash " . $order . "
-                            )";
+        $sql = "SELECT DISTINCT fileid, contenthashold
+                FROM {tool_imageoptimize_files}
+                WHERE (timeprocessed is null OR timeprocessed = 0) " . $order;
 
-        return $DB->get_records_sql($sql, $paramsmimetypes, 0, $maxchunksize);
+        // Use e.g. 2 * $maxchunksize because it is possible to get multiple times the same contenthash.
+        $rows = $DB->get_records_sql($sql, null, 0, 2 * $maxchunksize);
+
+        foreach ($rows as $row) {
+            $fileids[$row->contenthashold] = $row->fileid;
+        }
+
+        if (empty($fileids)) {
+            return [];
+        }
+
+        $fileids = array_values($fileids);
+
+        list($sqlin, $inparms) = $DB->get_in_or_equal($fileids);
+        $sql = "SELECT * from {files} WHERE id " . $sqlin;
+        return $DB->get_records_sql($sql, $inparms, 0, $maxchunksize);
     }
 
     /**
@@ -167,32 +175,46 @@ class tool_image_optimize_helper extends \tool_image_optimize {
         global $DB;
 
         $filestoprocess = $this->get_files_to_process($chunksize);
+
+        if (empty($filestoprocess)) {
+            mtrace("No files found to be processed.");
+        }
+
         foreach ($filestoprocess as $fileid => $file) {
             $fileobject = new \stdClass();
             $fileobject->fileid = $fileid;
             $fileobject->contenthashold = $file->contenthash;
             $fileobject->filesizeold = $file->filesize;
 
-            // Insert the file to process, to be shure not to process a file twice in error-case.
-            $filereferences = $DB->get_records('files', ['contenthash' => $file->contenthash]);
-            $tempfileobject = clone $fileobject;
-            // Make sure to get all references of the same file.
-            foreach ($filereferences as $reference) {
-                $tempfileobject->fileid = $reference->id;
-                $this->insert_fileinfo($tempfileobject);
-            }
-
             try {
                 $transaction = $DB->start_delegated_transaction();
 
                 $this->process_file($file);
 
-                $transaction->allow_commit();
-
                 if (!empty($this->dryrun)) {
+                    mtrace("Delete File references because of Dryrun.");
                     // Delete all file references by contenthashold.
-                    $DB->delete_records('tool_imageoptimize_files', ['contenthashold' => $fileobject->contenthashold]);
+                    $DB->set_field(
+                        'tool_imageoptimize_files',
+                        'contenthashnew',
+                        '',
+                        ['contenthashold' => $fileobject->contenthashold]
+                    );
+                    $DB->set_field(
+                        'tool_imageoptimize_files',
+                        'timeprocessed',
+                        '',
+                        ['contenthashold' => $fileobject->contenthashold]
+                    );
+                    $DB->set_field(
+                        'tool_imageoptimize_files',
+                        'filesize',
+                        '',
+                        ['contenthashold' => $fileobject->contenthashold]
+                    );
                 }
+
+                $transaction->allow_commit();
             } catch (\Exception $e) {
                 $transaction->rollback($e);
             }
@@ -212,16 +234,19 @@ class tool_image_optimize_helper extends \tool_image_optimize {
 
         if (!$filestorage = $this->init_filestorage()) {
             // Exit if the filestorage could not be initiated.
+            mtrace("Filestorage could not be initialized\n");
             return false;
         }
 
         if (!$filesystem = $filestorage->get_file_system()) {
             // Exit if the filesystem could not be initiated.
+            mtrace("Filesystem could not be initialized\n");
             return false;
         }
 
         if (!$instance = $filestorage->get_file_by_id($file->id)) {
             // Exit if the file could not be found.
+            mtrace("File id (" . $file->id . ") unknown\n");
             return false;
         }
 
@@ -235,17 +260,15 @@ class tool_image_optimize_helper extends \tool_image_optimize {
 
         // If file not found and running dryrun.
         if (!file_exists($filepath . "/" . $file->contenthash) && !empty($this->dryrun)) {
-            mtrace("File not found (" . $file->filename . ", " . $file->contenthash . ")\n");
-            $DB->delete_records('tool_imageoptimize_files', ['contenthashold' => $file->contenthash]);
+            mtrace("File physically not found (" . $file->filename . ", " . $file->contenthash . ") = DRYRUN\n");
             return false;
         }
 
         // If file not found and NOT running dryrun.
         if (!file_exists($filepath . "/" . $file->contenthash) && empty($this->dryrun)) {
-            mtrace("File not found (" . $file->filename . ", " . $file->contenthash . ")\n");
-            $tifile = $DB->get_record('tool_imageoptimize_files', ['fileid' => $file->id]);
-            $tifile->filenotfound = 1;
-            $DB->update_record('tool_imageoptimize_files', $tifile);
+            mtrace("File physically not found (" . $file->filename . ", " . $file->contenthash . ")\n");
+            $DB->set_field('tool_imageoptimize_files', 'filenotfound', 1, ['contenthashold' => $file->contenthash]);
+            $DB->set_field('tool_imageoptimize_files', 'timeprocessed', time(), ['contenthashold' => $file->contenthash]);
             return false;
         }
 
@@ -287,6 +310,7 @@ class tool_image_optimize_helper extends \tool_image_optimize {
         list($file->contenthash, $file->filesize, $newfile) = $filesystem->add_file_from_string($tofilecontent);
 
         if (empty($file->filesize)) {
+            mtrace("Filesize is empty.");
             // Error -> Remove new file if possible to cleanup workingdirectories!
             $this->cleanup_working_directories($file->contenthash, $fromfilepath, $tofilepath);
             // Throw error to revert possible db changes.
@@ -296,14 +320,17 @@ class tool_image_optimize_helper extends \tool_image_optimize {
         if ((CLI_SCRIPT && !$this->calledbytask) || !empty($this->dryrun)) {
             mtrace("The file " . $file->filename . " was optimized:\n
     Old vs. New Contenthash: " . $fileold->contenthash . " vs " . $file->contenthash . "\n
-    Old vs. New Filesize: " . $fileold->filesize . " vs " . $file->filesize . " => -" . round((1 - ($file->filesize / $fileold->filesize)) * 100, 2) . "%\n\n");
+    Old vs. New Filesize: " . $fileold->filesize . " vs " . $file->filesize
+            . " => -" . round((1 - ($file->filesize / $fileold->filesize)) * 100, 2) . "%\n\n");
         }
 
         if (!empty($this->dryrun)) {
             // Remove new file if possible to cleanup workingdirectories!
             $this->cleanup_working_directories($file->contenthash, $fromfilepath, $tofilepath);
             // Delte record from tool_imageoptimize_files table.
-            $DB->delete_records('tool_imageoptimize_files', ['contenthashold' => $file->contenthash]);
+            $DB->set_field('tool_imageoptimize_files', 'contenthashnew', '', ['contenthashold' => $file->contenthash]);
+            $DB->set_field('tool_imageoptimize_files', 'timeprocessed', '', ['contenthashold' => $file->contenthash]);
+            $DB->set_field('tool_imageoptimize_files', 'filesize', '', ['contenthashold' => $file->contenthash]);
             return true;
         }
 
@@ -392,10 +419,21 @@ class tool_image_optimize_helper extends \tool_image_optimize {
 
             // Update tool_imageoptimize_files table.
             $fileoptimizeobject = $DB->get_record('tool_imageoptimize_files', ['fileid' => $fileobject->id]);
-            $fileoptimizeobject->contenthashnew = $filenew->contenthash;
-            $fileoptimizeobject->filesize = $filenew->filesize;
-            $fileoptimizeobject->timeprocessed = time();
-            $DB->update_record('tool_imageoptimize_files', $fileoptimizeobject);
+            if (!empty($fileoptimizeobject)) {
+                $fileoptimizeobject->contenthashnew = $filenew->contenthash;
+                $fileoptimizeobject->filesize = $filenew->filesize;
+                $fileoptimizeobject->timeprocessed = time();
+                $DB->update_record('tool_imageoptimize_files', $fileoptimizeobject);
+            } else {
+                $fileoptimizeobject = new \stdClass();
+                $fileoptimizeobject->contenthashold = $fileold->contenthash;
+                $fileoptimizeobject->fileid = $fileobject->id;
+                $fileoptimizeobject->filesizeold = $fileold->filesize;
+                $fileoptimizeobject->contenthashnew = $filenew->contenthash;
+                $fileoptimizeobject->filesize = $filenew->filesize;
+                $fileoptimizeobject->timeprocessed = time();
+                $this->insert_fileinfo($fileoptimizeobject);
+            }
         }
     }
 
@@ -426,5 +464,92 @@ class tool_image_optimize_helper extends \tool_image_optimize {
 
         $this->config->filessortorder = $options['sort'];
         $this->process_files($options['chunksize']);
+    }
+
+    /**
+     * Insert fileinfo to tool_imageoptimize_files if necessary depending on contenthash.
+     * @param object $filerecord
+     */
+    public function insert_fileinfo_depending_on_contenthash($filerecord) :void {
+        global $DB;
+        $insertobject = new \stdClass();
+        $insertobject->fileid = $filerecord->id;
+        $insertobject->contenthashold = $filerecord->contenthash;
+        $insertobject->filesizeold = $filerecord->filesize;
+        if ($DB->record_exists('tool_imageoptimize_files', ['contenthashnew' => $filerecord->contenthash])) {
+            $insertobject->timeprocessed = time();
+        }
+        $DB->insert_record('tool_imageoptimize_files', $insertobject);
+    }
+
+    /**
+     * Populate imageoptimize table.
+     */
+    public function task_call_populate_imageoptimze_table() :void {
+        global $DB;
+
+        $mimetypes = array_keys($this::FILES_TYPES);
+        list($sqlpart, $params) = $DB->get_in_or_equal($mimetypes);
+
+        $timestart = time();
+        $timeend = $timestart;
+
+        // Do the job for one minute.
+        while ($timeend - $timestart < 60) {
+
+            $insertfromfileid = get_config('tool_imageoptimize', 'lastprocessedfileid');
+            if (empty($insertfromfileid)) {
+                $insertfromfileid = 0;
+            }
+
+            $select = "id > " . $insertfromfileid . " AND mimetype " . $sqlpart;
+            $records = $DB->get_records_select(
+                'files',
+                $select,
+                $params,
+                'id ASC',
+                'id, contenthash, filesize',
+                0,
+                intval(get_config('tool_imageoptimize', 'maxchunksizeimport'))
+            );
+
+            // Exit the loop, if no more files have to be imported.
+            if (empty($records)) {
+                break;
+            }
+
+            foreach ($records as $record) {
+                $insertobject = new \stdClass();
+                $insertobject->fileid = $record->id;
+                $insertobject->contenthashold = $record->contenthash;
+                $insertobject->filesizeold = $record->filesize;
+                $conditions = [
+                    'contenthashold' => $record->contenthash,
+                ];
+                if (!$DB->record_exists('tool_imageoptimize_files', $conditions)) {
+                    $DB->insert_record('tool_imageoptimize_files', $insertobject);
+                }
+                $lastprocessedfileid = $record->id;
+            }
+
+            // Set the last processed file id once per chunk to minimize write processes.
+            set_config('lastprocessedfileid', $lastprocessedfileid, 'tool_imageoptimize');
+
+            $timeend = time();
+        }
+    }
+
+    /**
+     * Cheks if a package command is installed.
+     * @param string $name of the package
+     * @return bool if package is installed
+     */
+    public function check_package_command_for_testing(string $name) : bool {
+        if (!exec('which ' . $name)) {
+            if (!exec('dpkg -s ' . $name)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
