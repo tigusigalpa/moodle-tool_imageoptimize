@@ -3,3 +3,8 @@
 /.idea
 composer.phar
 composer.lock
+.remote-sync.json
+composer.*
+node_modules
+.DS_Store
+transfer.sh

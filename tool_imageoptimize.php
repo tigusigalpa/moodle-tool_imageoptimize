@@ -347,25 +347,24 @@ class tool_image_optimize {
                         $toFilePath = $this->temp_file_path();
                         file_put_contents($fromFilePath, $fromFileContent);
                         if (file_exists($fromFilePath)) {
+                            $originalhash = $this->filerecord->contenthash;
+
                             $optimizerChain = OptimizerChainFactory::create();
                             $optimizerChain->optimize($fromFilePath, $toFilePath);
-                            $toFileContent = file_get_contents($toFilePath);
-                            $this->filerecord->pathnamehash = \file_storage::get_pathname_hash(
-                                $this->filerecord->contextid,
-                                $this->filerecord->component,
-                                $this->filerecord->filearea,
-                                $this->filerecord->itemid,
-                                $this->filerecord->filepath,
-                                $this->filerecord->filename
-                            );
-                            list($this->filerecord->contenthash, $this->filerecord->filesize, $newFile) = $fileSystem
-                                ->add_file_from_string($toFileContent);
-                            if ($newFile) {
-                                $this->db->update_record('files', $this->filerecord);
-                                @unlink($fromFileSourcePath);
+
+                            $stored = $fileSystem->add_file_from_path($toFilePath);
+                            if (!empty($stored[1]) && $stored[1] > 0) {
+                                $sql = "UPDATE {files}
+                                            SET contenthash=?,filesize=?
+                                            WHERE contenthash=?";
+                                $params = array(
+                                    $stored[0],
+                                    $stored[1],
+                                    $originalhash,
+                                );
+                                $this->db->execute($sql, $params);
+                                $fileSystem->remove_file($originalhash);
                             }
-                            @unlink($fromFilePath);
-                            @unlink($toFilePath);
                         }
                     }
                 }
