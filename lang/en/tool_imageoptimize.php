@@ -70,3 +70,20 @@ $string['webp'] = '<strong><a href="https://developers.google.com/speed/webp" ta
                         </ul>';
 
 $string['privacy:metadata'] = 'The image optimize tool plugin does not store any personal data.';
+
+// Strings for optimization task.
+$string['backgroundoptimizingheading'] = 'Settings for background optimizing';
+$string['cantfindfile'] = 'The file could not be found in filestorage.';
+$string['cantcopyfile'] = 'The file could not be stored.';
+$string['enablebackgroundoptimizing'] = 'Enable background optimizing';
+$string['enablebackgroundoptimizing_desc'] = 'When backgroundoptimizing is enabled there will be no optimiziation during upload.';
+$string['filecheckfailed'] = 'The filecheck failed.';
+$string['taskoptimize'] = 'Backgrond image optimization task';
+$string['taskoptimize_fill_table'] = 'Populating the tool_imageoptimize_files table';
+$string['maxchunksize'] = 'Maximum number of files processed with one task call.';
+$string['maxchunksizeimport'] = 'Maximum number of files written to the processing table with one task call.';
+$string['filehasnofilesize'] = 'The file has no filesize or filesize 0. Abort!';
+$string['filesortorder'] = 'Select filesortorder';
+$string['filesortorder_id_asc'] = 'Start with oldest files';
+$string['filesortorder_id_desc'] = 'Start with newest files';
+$string['pathnamehashchanged'] = 'The Pathnamehash has changed. Abort!';

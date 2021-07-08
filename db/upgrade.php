@@ -15,22 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Install trigger for component 'tool_imageoptimize'
- * @link      https://docs.moodle.org/dev/Installing_and_upgrading_plugin_database_tables#install.php
- * @package   tool_imageoptimize
- * @copyright 2020 Igor Sazonov <sovletig@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Handles upgrading instances of this plugin.
+ *
+ * @since      Moodle 3.8
+ * @package    tool_imageoptimize
+ * @copyright  2021 ISB Bayern
+ * @author     Peter Mayer, peter.mayer@isb.bayern.de
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
- /**
-  * Create tool_imageoptimize table on installation.
-  */
-function xmldb_tool_imageoptimize_install() {
+/**
+ * Handles upgrading instances of this plugin.
+
+ * @param int $oldversion
+ * @return bool
+ */
+function xmldb_tool_imageoptimize_upgrade($oldversion) {
     global $CFG;
+
     require_once($CFG->dirroot . "/admin/tool/imageoptimize/db/upgradelib.php");
 
-    // Create imageoptimize table.
-    tool_imageoptimize_create_table();
+    if ($oldversion < 2020060801) {
+
+        // Define table tool_imageoptimize_files to be created.
+        tool_imageoptimize_create_table();
+
+        // Imageoptimize savepoint reached.
+        upgrade_plugin_savepoint(true, 2020060801, 'tool', 'imageoptimize');
+    }
 
     return true;
 }
