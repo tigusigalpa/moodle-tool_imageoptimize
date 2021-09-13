@@ -54,5 +54,14 @@ function xmldb_tool_imageoptimize_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2020060813) {
+        $dbman = $DB->get_manager();
+        $table = new xmldb_table('tool_imageoptimize_files');
+        $index = new xmldb_index('contenthashnew', null, ['contenthashnew']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+    }
+
     return true;
 }
