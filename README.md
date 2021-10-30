@@ -32,6 +32,8 @@ sudo apt-get install optipng
 sudo apt-get install gifsicle
 
 sudo apt-get install webp
+
+sudo apt-get install pngquant
 ```
 
 #### Fedora/RHEL/CentOS
@@ -44,6 +46,8 @@ sudo dnf install optipng
 sudo dnf install gifsicle
 
 sudo dnf install libwebp-tools
+
+sudo dnf install pngquant
 ```
 
 ### PHP
