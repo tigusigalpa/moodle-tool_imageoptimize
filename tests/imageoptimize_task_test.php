@@ -176,7 +176,7 @@ class imageoptimize_task_test extends advanced_testcase {
             // Check if old file does not exist any more.
             $fulldirold = $filesystemhelper->get_fulldir_from_hash_imgopt($imgoptfile->contenthashold);
             $fileold = $fulldirold . "/" . $imgoptfile->contenthashold;
-            $this->assertFileNotExists($fileold);
+            $this->assertFileDoesNotExist($fileold);
 
             // Check if filesizenew is set in tool_imageoptimize_files and is equal to the filesize of the physical file.
             $this->assertEquals($imgoptfile->filesize, filesize($filenew));
@@ -220,7 +220,7 @@ class imageoptimize_task_test extends advanced_testcase {
             // Check if old file does not exist any more.
             $fulldirold = $filesystemhelper->get_fulldir_from_hash_imgopt($imgoptfile->contenthashold);
             $fileold = $fulldirold . "/" . $imgoptfile->contenthashold;
-            $this->assertFileNotExists($fileold);
+            $this->assertFileDoesNotExist($fileold);
 
             // Check if filesizenew is set in tool_imageoptimize_files and is equal to the filesize of the physical file.
             $this->assertEquals($imgoptfile->filesize, filesize($filenew));
@@ -251,7 +251,7 @@ class imageoptimize_task_test extends advanced_testcase {
         $fulldirmissingfile = $filesystemhelper->get_fulldir_from_hash_imgopt($missingfile->contenthash);
         unlink($fulldirmissingfile . "/" . $missingfile->contenthash);
 
-        $this->assertFileNotExists($fulldirmissingfile . "/" . $missingfile->contenthash);
+        $this->assertFileDoesNotExist($fulldirmissingfile . "/" . $missingfile->contenthash);
 
         // Set filesortorder to oldest files first.
         set_config('filessortorder', 'iddesc', 'tool_imageoptimize');
@@ -297,7 +297,7 @@ class imageoptimize_task_test extends advanced_testcase {
         $fulldirmissingfile = $filesystemhelper->get_fulldir_from_hash_imgopt($missingfile->contenthash);
         unlink($fulldirmissingfile . "/" . $missingfile->contenthash);
 
-        $this->assertFileNotExists($fulldirmissingfile . "/" . $missingfile->contenthash);
+        $this->assertFileDoesNotExist($fulldirmissingfile . "/" . $missingfile->contenthash);
 
         // Set filesortorder to oldest files first.
         set_config('filessortorder', 'iddesc', 'tool_imageoptimize');
@@ -345,7 +345,7 @@ class imageoptimize_task_test extends advanced_testcase {
         $fulldirmissingfile = $filesystemhelper->get_fulldir_from_hash_imgopt($missingfile->contenthash);
         unlink($fulldirmissingfile . "/" . $missingfile->contenthash);
 
-        $this->assertFileNotExists($fulldirmissingfile . "/" . $missingfile->contenthash);
+        $this->assertFileDoesNotExist($fulldirmissingfile . "/" . $missingfile->contenthash);
 
         // Set filesortorder to oldest files first.
         set_config('filessortorder', 'iddesc', 'tool_imageoptimize');

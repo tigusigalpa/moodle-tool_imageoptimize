@@ -49,6 +49,13 @@ sudo dnf install libwebp-tools
 
 sudo dnf install pngquant
 ```
+### Check Setup.
+To check if, e.g. on the cron job server (web server cluster), all prerequisites are met, you can run the following CLI script on the console:
+
+```$bash
+php admin/tool/imageoptimize/cli/check_installed_modules.php
+``` 
+The results of this script are stored in config and affects the display in settings.php. Even if the cron jobs are executed via a separate server, the settings will show whether all libraries are installed.
 
 ### PHP
 
