@@ -48,7 +48,7 @@ $string['exec_warning'] = 'Für die Funktion dieses Plugins müssen Sie einige E
                             <li>Installieren Sie die für die Komprimierung erforderlichen Pakete für jeden Image-Typ auf dem Server</li>
                         </ol>';
 $string['info_title'] = 'Um die Formatkomprimierungsfunktion <strong> {$a} </strong> zu erweitern, können Sie zusätzliche Pakete für die Komprimierung installieren';
-$string['warning_title'] = 'Installieren Sie eines der Pakete auf Ihrem Server oder alle zusammen, damit die Option angezeigt wird';
+$string['warning_title'] = 'Installieren Sie eines der Pakete auf Ihrem Server oder alle zusammen, damit die Option verwendet werden kann:';
 $string['jpegoptim'] = '<strong> <a href="http://freshmeat.sourceforge.net/projects/jpegoptim" target="_blank"> JpegOptim </a> </strong>
                         <ul>
                             <li> <strong> Debian / Ubuntu </strong>: <code> sudo apt-get install jpegoptim </code> </li>

@@ -54,7 +54,7 @@ if ($hassiteconfig) {
     foreach (tool_image_optimize::PACKAGES as $package => $imageextension) {
         if (!get_config('tool_imageoptimize', $package . "_installed")) {
             if (!$imageoptimize->can_handle_file_extension($imageextension)) {
-                $warning = $package . get_string('warning_title', 'tool_imageoptimize') . '<ol>';
+                $warning = get_string('warning_title', 'tool_imageoptimize') . '<ol>';
                 foreach (tool_image_optimize::PACKAGES_TYPES[$imageextension] as $package) {
                     $warning .= '<li>' . get_string($package, 'tool_imageoptimize') . '</li>';
                 }
