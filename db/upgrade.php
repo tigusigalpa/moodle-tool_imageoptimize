@@ -45,7 +45,7 @@ function xmldb_tool_imageoptimize_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020060801, 'tool', 'imageoptimize');
     }
 
-    if ($oldversion < 2020060809) {
+    if ($oldversion < 2021122100) {
         $dbman = $DB->get_manager();
         $table = new xmldb_table('tool_imageoptimize_files');
         $index = new xmldb_index('contenthashold', 'XMLDB_INDEX_NOTUNIQUE', ['contenthashold']);
@@ -54,7 +54,7 @@ function xmldb_tool_imageoptimize_upgrade($oldversion) {
         }
     }
 
-    if ($oldversion < 2020060813) {
+    if ($oldversion < 2021122100) {
         $dbman = $DB->get_manager();
         $table = new xmldb_table('tool_imageoptimize_files');
         $index = new xmldb_index('contenthashnew', null, ['contenthashnew']);
