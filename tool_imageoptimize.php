@@ -106,7 +106,11 @@ class tool_image_optimize {
     protected const COMPONENT = 'tool_imageoptimize';
 
     public const PACKAGES = [
-        'jpegoptim', 'optipng', 'gifsicle'
+        'jpegoptim' => 'jpg',
+        'optipng' => 'png',
+        'gifsicle' => 'gif',
+        'webp' => 'jpg',
+        'pngquant' => 'png',
     ];
 
     public const PACKAGES_WEBP = [
@@ -142,7 +146,7 @@ class tool_image_optimize {
             $this->sourcefilerecord = $sourcefilerecord;
         }
         $this->oscheck = $this->os_check();
-        // $this->exec = $this->exec_enabled();
+        $this->exec = $this->exec_enabled();
         // $this->jpegoptim = $this->check_package('jpegoptim');
         // $this->optipng = $this->check_package('optipng');
         // $this->gifsicle = $this->check_package('gifsicle');
@@ -155,6 +159,9 @@ class tool_image_optimize {
      * @return bool
      */
     public function get_exec() : bool {
+        if (get_config('tool_imageoptimize', "enablebackgroundoptimizing")) {
+            return get_config('tool_imageoptimize', "execenabled");
+        }
         return $this->exec;
     }
 
@@ -164,6 +171,9 @@ class tool_image_optimize {
      * @return bool
      */
     public function get_os_check() : bool {
+        if (get_config('tool_imageoptimize', "enablebackgroundoptimizing")) {
+            return get_config('tool_imageoptimize', "oscompatible");
+        }
         return $this->oscheck;
     }
 
@@ -195,7 +205,7 @@ class tool_image_optimize {
      *
      * @return bool
      */
-    protected function exec_enabled() : bool {
+    public function exec_enabled() : bool {
         if ($this->get_os_check()) {
             return !in_array('exec', explode(',', ini_get('disable_functions')));
         }
@@ -253,7 +263,7 @@ class tool_image_optimize {
     public function check_package(string $name) : bool {
         if ($this->get_exec()) {
             if ($name != 'webp') {
-                if (in_array($name, self::PACKAGES)) {
+                if (in_array($name, array_keys(self::PACKAGES))) {
                     if ($this->check_package_command($name)) {
                         return true;
                     }
