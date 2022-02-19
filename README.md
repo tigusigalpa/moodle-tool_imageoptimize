@@ -1,5 +1,7 @@
 # Image optimize/compress tool for Moodle
 
+![tool_imageoptimize_logo](https://user-images.githubusercontent.com/2721390/154801676-deadcba3-ab6c-4eb1-9307-218d5fb34c1f.jpg)
+
 With this admin tool plugin it is possible to save your hard disk space through optimization (compressing) uploaded images sizes (up to 80%) without huge quality cut. It works on a Moodle based ___create___ and ___update___ [hooks](https://docs.moodle.org/dev/Callbacks#Types_of_callbacks_in_Moodle). You just have to install some server tools on your server.
 
 ## Requirements
