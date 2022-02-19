@@ -18,7 +18,7 @@ UNIX backed OS (_not Windows or MacOS for the moment_): **Ubuntu/Debian, CentOS,
 
 ### PHP
 
-PHP version **7.2.0+**
+PHP version **7.3.0+**
 
 ## Install
 
@@ -55,7 +55,7 @@ sudo dnf install pngquant
 To check if, e.g. on the cron job server (web server cluster), all prerequisites are met, you can run the following CLI script on the console:
 
 ```$bash
-php admin/tool/imageoptimize/cli/check_installed_modules.php
+php admin/tool/imageoptimize/cli/check_requirements.php
 ``` 
 The results of this script are stored in config and affects the display in settings.php. Even if the cron jobs are executed via a separate server, the settings will show whether all libraries are installed.
 

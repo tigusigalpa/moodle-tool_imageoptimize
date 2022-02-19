@@ -1,9 +1,7 @@
 # Easily optimize images using PHP
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/image-optimizer.svg?style=flat-square)](https://packagist.org/packages/spatie/image-optimizer)
-[![Build Status](https://img.shields.io/travis/spatie/image-optimizer/master.svg?style=flat-square)](https://travis-ci.org/spatie/image-optimizer)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/image-optimizer.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/image-optimizer)
-[![StyleCI](https://styleci.io/repos/96041872/shield?branch=master)](https://styleci.io/repos/96041872)
+![Tests](https://github.com/spatie/image-optimizer/workflows/Tests/badge.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/image-optimizer.svg?style=flat-square)](https://packagist.org/packages/spatie/image-optimizer)
 
 This package can optimize PNGs, JPGs, SVGs and GIFs by running them through a chain of various [image optimization tools](#optimization-tools). Here's how you can use it:
@@ -24,6 +22,14 @@ Loving Laravel? Then head over to [the Laravel specific integration](https://git
 
 Using WordPress? Then try out [the WP CLI command](https://github.com/TypistTech/image-optimize-command).
 
+## Support us
+
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/image-optimizer.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/image-optimizer)
+
+We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+
+We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+
 ## Installation
 
 You can install the package via composer:
@@ -39,7 +45,7 @@ The package will use these optimizers if they are present on your system:
 - [JpegOptim](http://freecode.com/projects/jpegoptim)
 - [Optipng](http://optipng.sourceforge.net/)
 - [Pngquant 2](https://pngquant.org/)
-- [SVGO](https://github.com/svg/svgo)
+- [SVGO 1](https://github.com/svg/svgo)
 - [Gifsicle](http://www.lcdf.org/gifsicle/)
 - [cwebp](https://developers.google.com/speed/webp/docs/precompiled)
 
@@ -49,7 +55,7 @@ Here's how to install all the optimizers on Ubuntu:
 sudo apt-get install jpegoptim
 sudo apt-get install optipng
 sudo apt-get install pngquant
-sudo npm install -g svgo
+sudo npm install -g svgo@1.3.2
 sudo apt-get install gifsicle
 sudo apt-get install webp
 ```
@@ -60,9 +66,20 @@ And here's how to install the binaries on MacOS (using [Homebrew](https://brew.s
 brew install jpegoptim
 brew install optipng
 brew install pngquant
-brew install svgo
+npm install -g svgo@1.3.2
 brew install gifsicle
 brew install webp
+```
+And here's how to install the binaries on Fedora/RHEL/CentOS:
+
+```bash
+sudo dnf install epel-release
+sudo dnf install jpegoptim
+sudo dnf install optipng
+sudo dnf install pngquant
+sudo npm install -g svgo@1.3.2
+sudo dnf install gifsicle
+sudo dnf install libwebp-tools
 ```
 
 ## Which tools will do what?
@@ -82,13 +99,13 @@ PNGs will be made smaller by running them through two tools. The first one is [P
 - `-i0`: this will result in a non-interlaced, progressive scanned image
 - `-o2`: this set the optimization level to two (multiple IDAT compression trials)
 
-This package only supports Pngquant 2.5 and lower.
-
 ### SVGs
 
-SVGs will be minified by [SVGO](https://github.com/svg/svgo). SVGO's default configuration will be used, with the omission of the `cleanupIDs` plugin because that one is known to cause troubles when displaying multiple optimized SVGs on one page.
+SVGs will be minified by [SVGO 1](https://github.com/svg/svgo). SVGO's default configuration will be used, with the omission of the `cleanupIDs` plugin because that one is known to cause troubles when displaying multiple optimized SVGs on one page.
 
 Please be aware that SVGO can break your svg. You'll find more info on that in this [excellent blogpost](https://www.sarasoueidan.com/blog/svgo-tools/) by [Sara Soueidan](https://twitter.com/SaraSoueidan).
+
+For now, the default configuration used for SVGO is only compatible with SVGO 1.x. To use options compatible with SVGO 2.x, you need to [create your own optimization chain](#creating-your-own-optimization-chains).
 
 ### GIFs
 
@@ -308,7 +325,6 @@ Optimized<br>
 
 credits: Jeff Sheldon, via [Unsplash](https://unsplash.com)
 
-
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
@@ -321,7 +337,7 @@ composer test
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Security
 
@@ -329,9 +345,9 @@ If you discover any security related issues, please email freek@spatie.be instea
 
 ## Postcardware
 
-You're free to use this package (it's [MIT-licensed](LICENSE.md)), but if it makes it to your production environment we highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using.
+You're free to use this package (it's [MIT-licensed](.github/LICENSE.md)), but if it makes it to your production environment we highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using.
 
-Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
+Our address is: Spatie, Kruikstraat 22, 2018 Antwerp, Belgium.
 
 We publish all received postcards [on our company website](https://spatie.be/en/opensource/postcards).
 
@@ -344,13 +360,6 @@ This package has been inspired by [psliwa/image-optimizer](https://github.com/ps
 
 Emotional support provided by [Joke Forment](https://twitter.com/pronneur)
 
-## Support us
-
-Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
-
-Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie). 
-All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
-
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](.github/LICENSE.md) for more information.

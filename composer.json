@@ -5,7 +5,7 @@
     "keywords": ["php", "image", "optimize", "compress", "moodle", "jpegoptim", "optipng", "gifsicle", "webp"],
     "description": "Moodle admin tool to optimize images sizes on a create or update hooks",
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.3.0",
         "spatie/image-optimizer": "^1.2"
     },
     "authors": [
