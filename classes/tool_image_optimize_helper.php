@@ -463,7 +463,7 @@ class tool_image_optimize_helper extends \tool_image_optimize {
         }
 
         $this->config->filessortorder = $options['sort'];
-        $this->process_files($options['chunksize']);
+        $this->process_files((int)$options['chunksize']);
     }
 
     /**
