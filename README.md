@@ -98,3 +98,5 @@ Moodle admin tool ImageOptimize is licensed under [GNU General Public License v3
 [David Bogner](https://github.com/dasistwas)
 
 [Georg](https://github.com/GGeorggg) ([georg-github.com@glas.eu.org](mailto:georg-github.com@glas.eu.org))
+
+[Peter Mayer](https://github.com/PM84) ([admin@pemasoft.de](mailto:admin@pemasoft.de))
