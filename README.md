@@ -8,7 +8,7 @@ With this admin tool plugin it is possible to save your hard disk space through 
 
 Moodle version **3.8+**
 
-> Working with Moodle **3.8+** is possible because of **[MDL-35773](https://github.com/moodle/moodle/commit/94c71056a31327d6ef121ff7bb2a2cb15675b0c4#diff-c3687fe83effbd91c8bf18e648948632)**.
+> Working with Moodle **3.8+** is possible because of **[MDL-35773](https://github.com/moodle/moodle/commit/94c71056a31327d6ef121ff7bb2a2cb15675b0c4#diff-34fd265656b62b1b63bfd0dc74c51c6d3b74d1b150205c1375f06247dd2696d2)**.
 
 ### Server
 
@@ -80,6 +80,12 @@ PHP core [exec()](https://www.php.net/manual/en/function.exec.php) function enab
 
 Moodle admin tool ImageOptimize is licensed under [GNU General Public License v3 (or later)](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-## Author
+## Author and contributors
 
 [Igor Sazonov](https://twitter.com/tigusigalpa) ([sovletig@gmail.com](mailto:sovletig@gmail.com))
+
+[Robert Schrenk](https://twitter.com/rschrenk)
+
+[David Bogner](https://github.com/dasistwas)
+
+[Georg](https://github.com/GGeorggg) ([georg-github.com@glas.eu.org](mailto:georg-github.com@glas.eu.org))
