@@ -22,6 +22,7 @@
         <INDEX NAME="fileid" UNIQUE="true" FIELDS="fileid"/>
         <INDEX NAME="timeprocessed" UNIQUE="false" FIELDS="timeprocessed"/>
         <INDEX NAME="contenthashold" UNIQUE="false" FIELDS="contenthashold"/>
+        <INDEX NAME="contenthashnew" UNIQUE="false" FIELDS="contenthashnew"/>
       </INDEXES>
     </TABLE>
   </TABLES>
