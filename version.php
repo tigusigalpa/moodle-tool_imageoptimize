@@ -24,7 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+<<<<<<< HEAD
 $plugin->version   = 2021122100; // The current plugin version (Date: YYYYMMDDXX).
+=======
+$plugin->version   = 2022021900; // The current plugin version (Date: YYYYMMDDXX).
+>>>>>>> master
 $plugin->requires  = 2019111800; // Requires this Moodle version.
 $plugin->release   = '1.0.3 (Build: 2021020200)';
 $plugin->component = 'tool_imageoptimize'; // Full name of the plugin (used for diagnostics).
